@@ -1,0 +1,64 @@
+install.packages("bslib")
+install.packages("tidyverse")
+install.packages("knitr")
+---
+title: "ANA 515 Assignment 1"
+author: Hao Li
+date: 2022-6-5
+output: 
+  html_document:
+    theme:bootswatch: *Legacy custom theming*
+---
+
+### set up 
+
+```{r setup, include = FALSE}
+library(bslib)
+library(tidyverse)
+library(knitr)
+```
+
+### input dataset from url
+
+```{r, include=FALSE}
+url <- "https://raw.githubusercontent.com/fivethirtyeight/guns-data/master/full_data.csv"
+gun_deaths <- read_csv(url)
+```
+
+### get gun death subset
+
+```{r, include=FALSE}
+youth <- gun_deaths %>% 
+  filter(age <= 65)
+```
+
+### summary of youth 
+```{r, include=FALSE}
+summary(youth)
+```
+
+### rows in gun_deaths and youth
+```{r, include=FALSE}
+n_1 <-nrow(gun_deaths)
+n_2 <-nrow(youth)
+```
+
+```{r, echo = FALSE}
+#This next chunk is inline code.
+```
+
+We have data about `r n_1` individuals killed by guns. Only `r n_1-n_2` are older than 65. The distribution of the remainder is shown below: 
+
+### graph the distribution by age
+```{r youth-dist, echo = FALSE}
+youth %>%
+  ggplot(aes(age))+geom_freqpoly(binwidth=1)
+```
+
+### graph the distribution by race
+```{r race-dist, echo = FALSE}
+youth %>%
+  ggplot(aes(fct_infreq(race)%>%fct_rev()))+geom_bar()+
+  coord_flip()+labs(x="Victim race")
+```
+
